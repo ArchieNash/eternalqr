@@ -155,31 +155,38 @@ def edit(slug):
                 flash('Photo removed.', 'success')
 
         elif action == 'add_family_link':
-            relation_type = request.form.get('relation_type')
-            link_slug = request.form.get('linked_slug', '').strip()
-            link_name = request.form.get('linked_name', '').strip()
+            relation_types_in = request.form.getlist('relation_type[]')
+            link_slugs_in = request.form.getlist('linked_slug[]')
+            link_names_in = request.form.getlist('linked_name[]')
 
-            if relation_type not in RELATION_TYPES:
-                flash('Invalid relationship type.', 'error')
-            else:
+            added = 0
+            for i, rt in enumerate(relation_types_in):
+                if rt not in RELATION_TYPES:
+                    continue
+                ls = link_slugs_in[i].strip() if i < len(link_slugs_in) else ''
+                ln = link_names_in[i].strip() if i < len(link_names_in) else ''
+                if not ls and not ln:
+                    continue
                 linked_id = None
-                if link_slug:
-                    linked = Memorial.query.filter_by(slug=link_slug).first()
+                if ls:
+                    linked = Memorial.query.filter_by(slug=ls).first()
                     if linked:
                         linked_id = linked.id
                     else:
-                        flash(f'No memorial found with slug "{link_slug}".', 'error')
-                        return redirect(url_for('memorial.edit', slug=slug, _anchor='family'))
-
-                fl = FamilyLink(
+                        flash(f'No memorial found with slug "{ls}".', 'error')
+                        continue
+                db.session.add(FamilyLink(
                     memorial_id=memorial.id,
-                    relation_type=relation_type,
+                    relation_type=rt,
                     linked_memorial_id=linked_id,
-                    linked_name=link_name if not linked_id else None,
-                )
-                db.session.add(fl)
+                    linked_name=ln if not linked_id else None,
+                ))
+                added += 1
+
+            if added:
                 db.session.commit()
-                flash('Family member added.', 'success')
+                flash(f'{added} family member{"s" if added > 1 else ""} added.', 'success')
+            return redirect(url_for('memorial.edit', slug=slug, _anchor='family'))
 
         elif action == 'delete_family_link':
             link_id = request.form.get('link_id')

@@ -263,36 +263,77 @@
         <p class="text-stone-600 text-sm mb-6">No family members added yet.</p>
       {% endif %}
 
-      <form method="POST" action="{{ url_for('memorial.edit', slug=memorial.slug) }}" class="border-t border-stone-800 pt-5 space-y-4">
+      <form method="POST" action="{{ url_for('memorial.edit', slug=memorial.slug) }}" class="border-t border-stone-800 pt-5 space-y-3">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="action" value="add_family_link">
-        <p class="text-sm text-stone-400 font-medium">Add a family member</p>
-        <div class="grid sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs text-stone-500 mb-1.5">Relationship</label>
-            <select name="relation_type"
-              class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition">
-              {% for rt in relation_types %}
-                <option value="{{ rt }}">{{ rt|capitalize }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs text-stone-500 mb-1.5">Memorial slug (if on EternalQR)</label>
-            <input type="text" name="linked_slug" placeholder="john-smith"
-              class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
-          </div>
-          <div>
-            <label class="block text-xs text-stone-500 mb-1.5">Or enter a name</label>
-            <input type="text" name="linked_name" placeholder="Mary Smith"
-              class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-sm text-stone-400 font-medium">Add family members</p>
+          <p class="text-xs text-stone-600">Slug = the URL path of their memorial, e.g. <span class="font-mono">john-smith</span></p>
+        </div>
+
+        <div id="family-rows" class="space-y-2">
+          <!-- row template -->
+          <div class="family-row grid sm:grid-cols-[160px_1fr_1fr_auto] gap-2 items-end">
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">Relationship</label>
+              <select name="relation_type[]"
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition">
+                {% for rt in relation_types %}
+                  <option value="{{ rt }}">{{ rt|capitalize }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">EternalQR slug (optional)</label>
+              <input type="text" name="linked_slug[]" placeholder="john-smith"
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition" />
+            </div>
+            <div>
+              <label class="block text-xs text-stone-500 mb-1">Name (if not on EternalQR)</label>
+              <input type="text" name="linked_name[]" placeholder="Mary Smith"
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition" />
+            </div>
+            <div class="pb-0.5">
+              <button type="button" onclick="removeRow(this)"
+                class="remove-row-btn invisible text-stone-600 hover:text-red-400 text-xl leading-none px-2 py-2 transition">&times;</button>
+            </div>
           </div>
         </div>
-        <button type="submit"
-          class="bg-stone-700 hover:bg-stone-600 text-stone-200 text-sm font-medium px-4 py-2 rounded-lg transition">
-          Add Family Member
-        </button>
+
+        <div class="flex items-center gap-3 pt-1">
+          <button type="button" id="add-row-btn"
+            class="text-sm text-amber-500 hover:text-amber-400 transition font-medium">+ Add another</button>
+          <button type="submit"
+            class="bg-stone-700 hover:bg-stone-600 text-stone-200 text-sm font-medium px-4 py-2 rounded-lg transition">
+            Save Family Members
+          </button>
+        </div>
       </form>
+
+      <script>
+        const rowTemplate = document.querySelector('.family-row').cloneNode(true);
+
+        function updateRemoveButtons() {
+          const rows = document.querySelectorAll('.family-row');
+          rows.forEach(r => {
+            r.querySelector('.remove-row-btn').classList.toggle('invisible', rows.length === 1);
+          });
+        }
+
+        document.getElementById('add-row-btn').addEventListener('click', () => {
+          const clone = rowTemplate.cloneNode(true);
+          clone.querySelectorAll('input').forEach(i => i.value = '');
+          clone.querySelector('select').selectedIndex = 0;
+          clone.querySelector('.remove-row-btn').classList.remove('invisible');
+          document.getElementById('family-rows').appendChild(clone);
+          updateRemoveButtons();
+        });
+
+        function removeRow(btn) {
+          btn.closest('.family-row').remove();
+          updateRemoveButtons();
+        }
+      </script>
     </div>
   </div>
 
