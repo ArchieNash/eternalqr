@@ -47,7 +47,10 @@
 
   <nav class="border-b border-stone-800 bg-stone-900/80 backdrop-blur sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-      <a href="{{ url_for('main.landing') }}" class="font-serif text-xl font-bold text-amber-400 tracking-wide hover:text-amber-300 transition">EternalQR</a>
+      <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 hover:opacity-80 transition">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EternalQR logo" class="h-8 w-auto" />
+        <span class="font-serif text-xl font-bold text-amber-400 tracking-wide">EternalQR</span>
+      </a>
       <div class="flex items-center gap-5">
         {% if current_user.is_authenticated %}
           <span class="text-stone-500 text-sm hidden sm:inline">{{ current_user.name }}</span>
