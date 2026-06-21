@@ -339,6 +339,19 @@ def qr_page(slug):
     return render_template('memorial/qr.html', memorial=memorial, qr_url=qr_url)
 
 
+@memorial_bp.route('/edit/<slug>/qr/image')
+@login_required
+def qr_image(slug):
+    """Serve the QR PNG inline (for display in the browser)."""
+    memorial = Memorial.query.filter_by(slug=slug).first_or_404()
+    if not memorial.can_edit(current_user):
+        abort(403)
+    base_url = current_app.config.get('APP_BASE_URL', request.host_url.rstrip('/'))
+    qr_url = f"{base_url}{url_for('memorial.public', slug=slug)}"
+    png_bytes = generate_qr_png(qr_url)
+    return send_file(io.BytesIO(png_bytes), mimetype='image/png')
+
+
 @memorial_bp.route('/edit/<slug>/qr/download')
 @login_required
 def qr_download(slug):

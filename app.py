@@ -60,6 +60,14 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(memorial_bp)
 
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template('errors/403.html'), 403
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template('errors/404.html'), 404
+
     with app.app_context():
         db.create_all()
 
@@ -71,17 +79,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.errorhandler(403)
-def forbidden(e):
-    return render_template('errors/403.html'), 403
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return render_template('errors/404.html'), 404
-
-
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, port=port)

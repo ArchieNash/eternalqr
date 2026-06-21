@@ -13,6 +13,30 @@
         extend: {
           fontFamily: {
             serif: ['Playfair Display', 'Georgia', 'serif'],
+          },
+          colors: {
+            stone: {
+              950: '#f7f3ec',  /* page bg — warm parchment */
+              900: '#ece4d8',  /* nav / card bg */
+              800: '#e0d6c8',  /* input bg */
+              700: '#c4b49c',  /* borders */
+              600: '#998878',  /* subtle / muted */
+              500: '#7a8874',  /* placeholder text */
+              400: '#507858',  /* secondary text — dark sage */
+              300: '#2d5230',  /* active / tertiary accent */
+              200: '#1e3a20',
+              100: '#152a17',  /* primary text — deep forest */
+              50:  '#0c1a0e',  /* headlines */
+            },
+            amber: {
+              900: '#0c1a0e',
+              800: '#1a3020',
+              700: '#284838',
+              600: '#2e5a3a',  /* button bg — dark forest */
+              500: '#3a7048',  /* button hover */
+              400: '#3a6e48',  /* logo / links — forest green */
+              300: '#508060',  /* lighter accent */
+            }
           }
         }
       }
@@ -42,10 +66,10 @@
       <div class="max-w-6xl mx-auto px-4 pt-4 w-full space-y-2">
         {% for category, message in messages %}
           <div class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm border
-            {% if category == 'error' %}bg-red-900/40 border-red-700/60 text-red-200
-            {% elif category == 'success' %}bg-green-900/40 border-green-700/60 text-green-200
-            {% elif category == 'warning' %}bg-amber-900/40 border-amber-700/60 text-amber-200
-            {% else %}bg-blue-900/40 border-blue-700/60 text-blue-200{% endif %}">
+            {% if category == 'error' %}bg-red-50 border-red-300 text-red-800
+            {% elif category == 'success' %}bg-emerald-50 border-emerald-300 text-emerald-800
+            {% elif category == 'warning' %}bg-yellow-50 border-yellow-300 text-yellow-800
+            {% else %}bg-sky-50 border-sky-300 text-sky-800{% endif %}">
             <span class="flex-1">{{ message }}</span>
             <button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 text-xl leading-none flex-shrink-0">&times;</button>
           </div>
