@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Sign In — EternalQR{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <h1 class="font-serif text-3xl text-stone-100 mb-2">Welcome back</h1>
+      <p class="text-stone-500 text-sm">Sign in to manage your memorials.</p>
+    </div>
+
+    <div class="bg-stone-900 border border-stone-800 rounded-2xl p-8">
+      <form method="POST" action="{{ url_for('auth.login') }}{% if request.args.get('next') %}?next={{ request.args.get('next') }}{% endif %}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm text-stone-300 mb-1.5">Email address</label>
+            <input type="email" id="email" name="email" required
+              class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition"
+              placeholder="you@example.com" autocomplete="email" />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm text-stone-300 mb-1.5">Password</label>
+            <input type="password" id="password" name="password" required
+              class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition"
+              placeholder="Your password" autocomplete="current-password" />
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="remember" name="remember"
+              class="w-4 h-4 rounded border-stone-600 bg-stone-800 accent-amber-500 cursor-pointer" />
+            <label for="remember" class="text-sm text-stone-400 cursor-pointer">Keep me signed in</label>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="mt-7 w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 rounded-lg transition text-sm shadow-lg shadow-amber-900/20">
+          Sign In
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-stone-500 text-sm mt-6">
+      Don't have an account?
+      <a href="{{ url_for('auth.register') }}" class="text-amber-400 hover:text-amber-300 transition">Create one</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

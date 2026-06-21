@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}EternalQR — Permanent digital memorials{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-stone-900 to-stone-950 pointer-events-none"></div>
+  <div class="relative max-w-4xl mx-auto px-4 py-28 text-center">
+    <p class="text-amber-500 text-sm font-semibold tracking-widest uppercase mb-4">Honor every life</p>
+    <h1 class="font-serif text-5xl md:text-6xl font-bold text-stone-50 leading-tight mb-6">
+      A permanent tribute,<br>one scan away.
+    </h1>
+    <p class="text-stone-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+      Create a beautiful digital memorial, generate a QR code, and place it on a gravestone.
+      Family and friends scan it to celebrate a life well-lived — from anywhere, forever.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="{{ url_for('auth.register') }}" class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-amber-900/30">
+        Create a Memorial
+      </a>
+      <a href="{{ url_for('auth.login') }}" class="border border-stone-700 hover:border-stone-500 text-stone-300 hover:text-stone-100 font-medium px-8 py-4 rounded-xl text-lg transition">
+        Sign In
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="max-w-5xl mx-auto px-4 py-20">
+  <h2 class="font-serif text-3xl text-center text-stone-100 mb-14">How it works</h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="text-center">
+      <div class="w-14 h-14 rounded-full bg-amber-600/20 border border-amber-600/40 flex items-center justify-center mx-auto mb-5">
+        <span class="font-serif text-xl text-amber-400 font-bold">1</span>
+      </div>
+      <h3 class="text-stone-100 font-semibold text-lg mb-2">Create the memorial</h3>
+      <p class="text-stone-400 text-sm leading-relaxed">Add photos, a biography, and personal details. Invite family members to help manage it.</p>
+    </div>
+    <div class="text-center">
+      <div class="w-14 h-14 rounded-full bg-amber-600/20 border border-amber-600/40 flex items-center justify-center mx-auto mb-5">
+        <span class="font-serif text-xl text-amber-400 font-bold">2</span>
+      </div>
+      <h3 class="text-stone-100 font-semibold text-lg mb-2">Download the QR code</h3>
+      <p class="text-stone-400 text-sm leading-relaxed">Print it on a weatherproof plaque or engrave it on the gravestone. It links to the memorial forever.</p>
+    </div>
+    <div class="text-center">
+      <div class="w-14 h-14 rounded-full bg-amber-600/20 border border-amber-600/40 flex items-center justify-center mx-auto mb-5">
+        <span class="font-serif text-xl text-amber-400 font-bold">3</span>
+      </div>
+      <h3 class="text-stone-100 font-semibold text-lg mb-2">Share the tribute</h3>
+      <p class="text-stone-400 text-sm leading-relaxed">Visitors scan the code and can read the story, view photos, and leave a personal tribute message.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="border-t border-stone-800 py-20">
+  <div class="max-w-5xl mx-auto px-4">
+    <h2 class="font-serif text-3xl text-center text-stone-100 mb-14">Everything you need</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% set features = [
+        ('📷', 'Photo gallery', 'Upload and organize a lifetime of memories in a beautiful gallery.'),
+        ('✍️', 'Biography', 'Tell their story with a full biography and personal epitaph.'),
+        ('🌳', 'Family tree', 'Link memorials together to show family relationships.'),
+        ('💬', 'Community tributes', 'Friends and visitors can leave messages — you approve them first.'),
+        ('👥', 'Collaborators', 'Invite family members to help build and maintain the memorial.'),
+        ('📱', 'QR code download', 'High-resolution QR code ready to print or engrave.'),
+      ] %}
+      {% for icon, title, desc in features %}
+        <div class="bg-stone-900 border border-stone-800 rounded-xl p-5">
+          <div class="text-2xl mb-3">{{ icon }}</div>
+          <h3 class="text-stone-100 font-semibold mb-1">{{ title }}</h3>
+          <p class="text-stone-400 text-sm leading-relaxed">{{ desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20">
+  <div class="max-w-2xl mx-auto px-4 text-center">
+    <h2 class="font-serif text-4xl text-stone-100 mb-4">Begin their tribute today.</h2>
+    <p class="text-stone-400 mb-8">It takes just a few minutes to create a memorial that will last forever.</p>
+    <a href="{{ url_for('auth.register') }}" class="inline-block bg-amber-600 hover:bg-amber-500 text-white font-semibold px-10 py-4 rounded-xl text-lg transition shadow-lg shadow-amber-900/30">
+      Get Started — it's free
+    </a>
+  </div>
+</section>
+{% endblock %}

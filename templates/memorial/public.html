@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}{{ memorial.full_name }} — EternalQR{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="relative">
+  {% if memorial.profile_photo_url %}
+    <div class="absolute inset-0 overflow-hidden max-h-[520px]">
+      <img src="{{ memorial.profile_photo_url }}" alt="{{ memorial.full_name }}"
+           class="w-full h-full object-cover object-top blur-sm scale-110 opacity-20">
+    </div>
+  {% endif %}
+  <div class="relative max-w-4xl mx-auto px-4 pt-16 pb-14 flex flex-col sm:flex-row items-center sm:items-end gap-8">
+    <!-- Profile photo -->
+    <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4 border-stone-700 shadow-2xl flex-shrink-0 bg-stone-800">
+      {% if memorial.profile_photo_url %}
+        <img src="{{ memorial.profile_photo_url }}" alt="{{ memorial.full_name }}" class="w-full h-full object-cover">
+      {% else %}
+        <div class="w-full h-full flex items-center justify-center">
+          <span class="font-serif text-6xl text-stone-600">{{ memorial.first_name[0] }}{{ memorial.last_name[0] }}</span>
+        </div>
+      {% endif %}
+    </div>
+    <!-- Name & dates -->
+    <div class="text-center sm:text-left pb-2">
+      <h1 class="font-serif text-4xl sm:text-5xl text-stone-50 font-bold leading-tight">{{ memorial.full_name }}</h1>
+      <p class="text-amber-400 text-lg mt-2 tracking-wide font-serif">{{ memorial.years_display }}</p>
+      {% if memorial.age %}
+        <p class="text-stone-500 text-sm mt-1">Aged {{ memorial.age }}</p>
+      {% endif %}
+      {% if memorial.epitaph %}
+        <p class="text-stone-300 italic font-serif text-lg mt-3 max-w-xl">&ldquo;{{ memorial.epitaph }}&rdquo;</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto px-4 pb-20 space-y-12">
+  <hr class="border-stone-800">
+
+  <!-- Quick facts -->
+  {% set has_facts = memorial.birth_place or memorial.death_place or memorial.cemetery_name %}
+  {% if has_facts %}
+    <section class="grid sm:grid-cols-3 gap-6">
+      {% if memorial.birth_place %}
+        <div class="text-center">
+          <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">Born</p>
+          <p class="text-stone-200 text-sm">{{ memorial.birth_place }}</p>
+          {% if memorial.birth_date %}<p class="text-stone-500 text-xs">{{ memorial.birth_date.strftime('%B %d, %Y') }}</p>{% endif %}
+        </div>
+      {% endif %}
+      {% if memorial.death_place %}
+        <div class="text-center">
+          <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">Passed</p>
+          <p class="text-stone-200 text-sm">{{ memorial.death_place }}</p>
+          {% if memorial.death_date %}<p class="text-stone-500 text-xs">{{ memorial.death_date.strftime('%B %d, %Y') }}</p>{% endif %}
+        </div>
+      {% endif %}
+      {% if memorial.cemetery_name %}
+        <div class="text-center">
+          <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">Resting place</p>
+          <p class="text-stone-200 text-sm">{{ memorial.cemetery_name }}</p>
+          {% if memorial.cemetery_location %}<p class="text-stone-500 text-xs">{{ memorial.cemetery_location }}</p>{% endif %}
+          {% if memorial.plot_section or memorial.plot_number %}
+            <p class="text-stone-600 text-xs">
+              {% if memorial.plot_section %}Section {{ memorial.plot_section }}{% endif %}
+              {% if memorial.plot_number %} · Plot {{ memorial.plot_number }}{% endif %}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  <!-- Biography -->
+  {% if memorial.biography %}
+    <section>
+      <h2 class="font-serif text-2xl text-stone-200 mb-5">Their Story</h2>
+      <div class="prose prose-invert prose-stone max-w-none">
+        {% for paragraph in memorial.biography.split('\n\n') %}
+          {% if paragraph.strip() %}
+            <p class="text-stone-300 leading-relaxed mb-4 text-base">{{ paragraph.strip() }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Photo gallery -->
+  {% if memorial.photos %}
+    <section>
+      <h2 class="font-serif text-2xl text-stone-200 mb-5">Gallery</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {% for photo in memorial.photos %}
+          <a href="{{ photo.url }}" data-lightbox class="group relative block rounded-xl overflow-hidden bg-stone-800">
+            <img src="{{ photo.url }}" alt="{{ photo.caption or '' }}"
+                 class="w-full h-48 object-cover group-hover:scale-105 transition duration-500">
+            {% if photo.caption or photo.year %}
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-stone-900/90 to-transparent p-3 translate-y-full group-hover:translate-y-0 transition duration-300">
+                <p class="text-white text-xs">{{ photo.caption or '' }}{% if photo.year %} ({{ photo.year }}){% endif %}</p>
+              </div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Family -->
+  {% if memorial.family_links %}
+    <section>
+      <h2 class="font-serif text-2xl text-stone-200 mb-5">Family</h2>
+      <div class="flex flex-wrap gap-3">
+        {% for link in memorial.family_links %}
+          <div class="bg-stone-900 border border-stone-800 rounded-xl px-5 py-3">
+            {% if link.linked_memorial %}
+              <a href="{{ url_for('memorial.public', slug=link.linked_memorial.slug) }}"
+                 class="text-stone-100 hover:text-amber-400 transition font-medium text-sm">{{ link.display_name }}</a>
+            {% else %}
+              <span class="text-stone-100 font-medium text-sm">{{ link.display_name }}</span>
+            {% endif %}
+            <p class="text-stone-500 text-xs mt-0.5">{{ link.label }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <hr class="border-stone-800" id="tributes">
+
+  <!-- Existing tributes -->
+  {% if memories %}
+    <section>
+      <h2 class="font-serif text-2xl text-stone-200 mb-6">Tributes</h2>
+      <div class="space-y-5">
+        {% for memory in memories %}
+          <div class="bg-stone-900 border border-stone-800 rounded-xl p-5">
+            <p class="text-stone-200 leading-relaxed mb-4">&ldquo;{{ memory.content }}&rdquo;</p>
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-stone-700 flex items-center justify-center flex-shrink-0">
+                <span class="text-xs text-stone-400">{{ memory.author_name[0] }}</span>
+              </div>
+              <div>
+                <span class="text-stone-300 text-sm font-medium">{{ memory.author_name }}</span>
+                {% if memory.relationship_to_deceased %}
+                  <span class="text-stone-500 text-xs ml-2">{{ memory.relationship_to_deceased }}</span>
+                {% endif %}
+                <p class="text-stone-600 text-xs">{{ memory.created_at.strftime('%B %d, %Y') }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Leave a tribute -->
+  <section>
+    <h2 class="font-serif text-2xl text-stone-200 mb-2">Leave a Tribute</h2>
+    <p class="text-stone-500 text-sm mb-6">Share a memory or message. It will appear after the family approves it.</p>
+
+    <form method="POST" action="{{ url_for('memorial.submit_memory', slug=memorial.slug) }}"
+          class="bg-stone-900 border border-stone-800 rounded-xl p-6 space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-stone-400 mb-1.5">Your name <span class="text-red-500">*</span></label>
+          <input type="text" name="author_name" required
+            class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition"
+            placeholder="Jane Smith" />
+        </div>
+        <div>
+          <label class="block text-sm text-stone-400 mb-1.5">Your relationship</label>
+          <input type="text" name="relationship"
+            class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition"
+            placeholder="Friend, colleague, neighbour…" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">Your tribute <span class="text-red-500">*</span></label>
+        <textarea name="content" rows="5" required
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition resize-y"
+          placeholder="Share a memory, a kind word, or what they meant to you…"></textarea>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="submit"
+          class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm">
+          Submit Tribute
+        </button>
+      </div>
+    </form>
+  </section>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4" onclick="closeLightbox()">
+  <button class="absolute top-4 right-4 text-white/60 hover:text-white text-4xl leading-none z-10">&times;</button>
+  <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onclick="event.stopPropagation()">
+</div>
+
+<script>
+  document.querySelectorAll('[data-lightbox]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightbox-img').src = a.href;
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    });
+  });
+  function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.classList.add('hidden');
+    lb.classList.remove('flex');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+{% endblock %}

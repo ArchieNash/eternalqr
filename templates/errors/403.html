@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Access Denied — EternalQR{% endblock %}
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 text-center">
+  <div>
+    <p class="font-serif text-8xl text-stone-800 font-bold mb-4">403</p>
+    <h1 class="font-serif text-2xl text-stone-300 mb-3">Access denied</h1>
+    <p class="text-stone-600 text-sm mb-8">You don't have permission to edit this memorial.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="text-amber-400 hover:text-amber-300 text-sm transition">← Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}

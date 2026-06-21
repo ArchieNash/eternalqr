@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}New Memorial — EternalQR{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-lg">
+    <div class="text-center mb-8">
+      <h1 class="font-serif text-3xl text-stone-100 mb-2">Create a Memorial</h1>
+      <p class="text-stone-500 text-sm">You can add photos, biography, and more after this step.</p>
+    </div>
+
+    <div class="bg-stone-900 border border-stone-800 rounded-2xl p-8">
+      <form method="POST" action="{{ url_for('memorial.create') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="space-y-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="first_name" class="block text-sm text-stone-300 mb-1.5">First name <span class="text-red-500">*</span></label>
+              <input type="text" id="first_name" name="first_name" required
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition"
+                placeholder="First" autocomplete="off" />
+            </div>
+            <div>
+              <label for="last_name" class="block text-sm text-stone-300 mb-1.5">Last name <span class="text-red-500">*</span></label>
+              <input type="text" id="last_name" name="last_name" required
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition"
+                placeholder="Last" autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="birth_date" class="block text-sm text-stone-300 mb-1.5">Date of birth</label>
+              <input type="date" id="birth_date" name="birth_date"
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition [color-scheme:dark]" />
+            </div>
+            <div>
+              <label for="death_date" class="block text-sm text-stone-300 mb-1.5">Date of passing</label>
+              <input type="date" id="death_date" name="death_date"
+                class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition [color-scheme:dark]" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="mt-8 w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 rounded-lg transition text-sm shadow-lg shadow-amber-900/20">
+          Create &amp; Continue →
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-stone-600 text-sm mt-6">
+      <a href="{{ url_for('dashboard.index') }}" class="hover:text-stone-400 transition">← Back to dashboard</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}EternalQR{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-stone-950 text-stone-100 flex flex-col min-h-screen">
+
+  <nav class="border-b border-stone-800 bg-stone-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+      <a href="{{ url_for('main.landing') }}" class="font-serif text-xl font-bold text-amber-400 tracking-wide hover:text-amber-300 transition">EternalQR</a>
+      <div class="flex items-center gap-5">
+        {% if current_user.is_authenticated %}
+          <span class="text-stone-500 text-sm hidden sm:inline">{{ current_user.name }}</span>
+          <a href="{{ url_for('dashboard.index') }}" class="text-sm text-stone-300 hover:text-amber-400 transition">Dashboard</a>
+          <a href="{{ url_for('auth.logout') }}" class="text-sm text-stone-500 hover:text-stone-300 transition">Logout</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="text-sm text-stone-300 hover:text-amber-400 transition">Login</a>
+          <a href="{{ url_for('auth.register') }}" class="text-sm bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition font-medium">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="max-w-6xl mx-auto px-4 pt-4 w-full space-y-2">
+        {% for category, message in messages %}
+          <div class="flex items-start gap-3 px-4 py-3 rounded-lg text-sm border
+            {% if category == 'error' %}bg-red-900/40 border-red-700/60 text-red-200
+            {% elif category == 'success' %}bg-green-900/40 border-green-700/60 text-green-200
+            {% elif category == 'warning' %}bg-amber-900/40 border-amber-700/60 text-amber-200
+            {% else %}bg-blue-900/40 border-blue-700/60 text-blue-200{% endif %}">
+            <span class="flex-1">{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 text-xl leading-none flex-shrink-0">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-stone-800 mt-16 py-8 text-center text-stone-600 text-sm">
+    <p>&copy; 2026 EternalQR &mdash; Honoring lives, preserving memories.</p>
+  </footer>
+
+</body>
+</html>

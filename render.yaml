@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: eternalqr
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: eternalqr-db
+          property: connectionString
+      # Set this to your actual Render URL after first deploy, e.g. https://eternalqr.onrender.com
+      - key: APP_BASE_URL
+        sync: false
+      # Cloudinary — set in Render dashboard (cloudinary.com)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      # Email — set in Render dashboard (use a Gmail app password)
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "true"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+
+databases:
+  - name: eternalqr-db
+    databaseName: eternalqr
+    plan: free

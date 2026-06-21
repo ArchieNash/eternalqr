@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}QR Code — {{ memorial.full_name }} — EternalQR{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-16">
+
+  <div class="mb-8">
+    <a href="{{ url_for('memorial.edit', slug=memorial.slug) }}#settings" class="text-stone-500 hover:text-stone-300 text-sm transition">← Back to memorial</a>
+    <h1 class="font-serif text-3xl text-stone-100 mt-2">QR Code</h1>
+    <p class="text-stone-500 text-sm mt-1">For {{ memorial.full_name }}</p>
+  </div>
+
+  <div class="bg-stone-900 border border-stone-800 rounded-2xl p-8 flex flex-col items-center">
+
+    <!-- QR display -->
+    <div class="bg-white rounded-2xl p-5 shadow-2xl shadow-stone-950/50 mb-6">
+      <canvas id="qr-canvas"></canvas>
+    </div>
+
+    <!-- URL label -->
+    <p class="text-stone-500 text-xs text-center mb-6 font-mono break-all max-w-sm">{{ qr_url }}</p>
+
+    <!-- Download button -->
+    <a href="{{ url_for('memorial.qr_download', slug=memorial.slug) }}"
+       class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg shadow-amber-900/20 text-sm">
+      Download PNG
+    </a>
+  </div>
+
+  <!-- Instructions -->
+  <div class="mt-8 bg-stone-900 border border-stone-800 rounded-xl p-6 space-y-4">
+    <h2 class="text-stone-300 font-semibold text-sm uppercase tracking-wider">How to use this QR code</h2>
+    <ol class="space-y-3 text-stone-400 text-sm">
+      <li class="flex gap-3">
+        <span class="text-amber-500 font-bold flex-shrink-0">1.</span>
+        <span>Download the PNG and bring it to a trophy shop, engraver, or online printing service.</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-amber-500 font-bold flex-shrink-0">2.</span>
+        <span>Have it engraved on a plaque, laser-etched onto stone, or printed on a weatherproof sticker.</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-amber-500 font-bold flex-shrink-0">3.</span>
+        <span>Place it on the gravestone or memorial marker. Anyone with a smartphone can scan it to visit the memorial.</span>
+      </li>
+    </ol>
+    <p class="text-stone-600 text-xs pt-2 border-t border-stone-800">
+      The QR code links to <span class="font-mono">{{ qr_url }}</span> — this URL will never change.
+    </p>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script>
+  QRCode.toCanvas(document.getElementById('qr-canvas'), {{ qr_url | tojson }}, {
+    width: 260,
+    margin: 1,
+    color: { dark: '#1c1917', light: '#ffffff' }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — EternalQR{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12">
+
+  <div class="flex items-center justify-between mb-10">
+    <div>
+      <h1 class="font-serif text-3xl text-stone-100">Your Memorials</h1>
+      <p class="text-stone-500 text-sm mt-1">Manage and update the lives you're honoring.</p>
+    </div>
+    <a href="{{ url_for('memorial.create') }}"
+      class="bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition shadow-lg shadow-amber-900/20">
+      + New Memorial
+    </a>
+  </div>
+
+  <!-- Owned memorials -->
+  <section class="mb-12">
+    {% if owned %}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for m in owned %}
+          <div class="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden hover:border-stone-700 transition group">
+            <!-- Photo strip -->
+            <div class="h-36 bg-stone-800 relative overflow-hidden">
+              {% if m.profile_photo_url %}
+                <img src="{{ m.profile_photo_url }}" alt="{{ m.full_name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="font-serif text-5xl text-stone-700">{{ m.first_name[0] }}{{ m.last_name[0] }}</span>
+                </div>
+              {% endif %}
+              <div class="absolute inset-0 bg-gradient-to-t from-stone-900/80 to-transparent"></div>
+              <span class="absolute bottom-2 right-2 text-xs px-2 py-0.5 rounded-full font-medium
+                {% if m.is_published %}bg-green-800/80 text-green-300{% else %}bg-stone-700/80 text-stone-400{% endif %}">
+                {{ 'Published' if m.is_published else 'Draft' }}
+              </span>
+            </div>
+            <!-- Info -->
+            <div class="p-5">
+              <h2 class="font-serif text-lg text-stone-100 font-semibold mb-0.5">{{ m.full_name }}</h2>
+              <p class="text-stone-500 text-sm mb-4">{{ m.years_display }}</p>
+              <div class="flex gap-3">
+                <a href="{{ url_for('memorial.edit', slug=m.slug) }}"
+                  class="flex-1 text-center text-sm bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-stone-100 py-2 rounded-lg transition">
+                  Edit
+                </a>
+                {% if m.is_published %}
+                  <a href="{{ url_for('memorial.public', slug=m.slug) }}" target="_blank"
+                    class="flex-1 text-center text-sm bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-stone-100 py-2 rounded-lg transition">
+                    View
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <!-- Create new card -->
+        <a href="{{ url_for('memorial.create') }}"
+          class="border-2 border-dashed border-stone-800 hover:border-amber-700/50 rounded-xl flex flex-col items-center justify-center h-48 text-stone-600 hover:text-amber-500 transition group">
+          <span class="text-4xl mb-2 group-hover:scale-110 transition">+</span>
+          <span class="text-sm font-medium">New memorial</span>
+        </a>
+      </div>
+    {% else %}
+      <div class="text-center py-20 border-2 border-dashed border-stone-800 rounded-2xl">
+        <p class="font-serif text-2xl text-stone-600 mb-4">No memorials yet</p>
+        <p class="text-stone-600 text-sm mb-8">Create your first memorial to honor someone special.</p>
+        <a href="{{ url_for('memorial.create') }}"
+          class="inline-block bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-3 rounded-lg transition">
+          Create a Memorial
+        </a>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- Collaborating memorials -->
+  {% if collaborating %}
+    <section>
+      <h2 class="font-serif text-xl text-stone-400 mb-5 border-t border-stone-800 pt-8">Shared with you</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for m in collaborating %}
+          <div class="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden hover:border-stone-700 transition group">
+            <div class="h-28 bg-stone-800 relative overflow-hidden">
+              {% if m.profile_photo_url %}
+                <img src="{{ m.profile_photo_url }}" alt="{{ m.full_name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="font-serif text-4xl text-stone-700">{{ m.first_name[0] }}{{ m.last_name[0] }}</span>
+                </div>
+              {% endif %}
+              <div class="absolute inset-0 bg-gradient-to-t from-stone-900/80 to-transparent"></div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-serif text-base text-stone-100 font-semibold">{{ m.full_name }}</h3>
+              <p class="text-stone-500 text-xs mb-3">{{ m.years_display }}</p>
+              <a href="{{ url_for('memorial.edit', slug=m.slug) }}"
+                class="block text-center text-sm bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-stone-100 py-1.5 rounded-lg transition">
+                Edit
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</div>
+{% endblock %}
