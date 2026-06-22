@@ -62,5 +62,32 @@
     </form>
   </div>
 
+  <!-- Delete Account -->
+  <div class="bg-stone-900 border border-red-900/40 rounded-xl p-6 mt-6">
+    <h2 class="text-red-400 font-semibold text-sm uppercase tracking-wider mb-2">Delete Account</h2>
+    <p class="text-stone-500 text-sm mb-5">Permanently deletes your account and all memorials you own. This cannot be undone.</p>
+
+    <details class="group">
+      <summary class="cursor-pointer text-sm text-red-400 hover:text-red-300 transition font-medium list-none">
+        I want to delete my account →
+      </summary>
+      <form method="POST" action="{{ url_for('account.index') }}"
+        onsubmit="return confirm('This will permanently delete your account and all your memorials. Are you sure?')"
+        class="mt-4 space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="delete_account">
+        <div>
+          <label class="block text-sm text-stone-400 mb-1.5">Enter your password to confirm</label>
+          <input type="password" name="confirm_password" required
+            class="w-full bg-stone-800 border border-red-900/50 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-red-500 transition" />
+        </div>
+        <button type="submit"
+          class="bg-red-800 hover:bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition">
+          Permanently Delete Account
+        </button>
+      </form>
+    </details>
+  </div>
+
 </div>
 {% endblock %}
