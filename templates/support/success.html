@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Thank you — ArchiveHumanity{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-24 text-center">
+  <div class="text-5xl mb-6">🙏</div>
+  <h1 class="font-serif text-4xl text-stone-100 mb-4">Thank you</h1>
+  <p class="text-stone-400 text-lg leading-relaxed mb-8">
+    Your support means a lot. It goes directly toward keeping ArchiveHumanity running so families can preserve their memories forever.
+  </p>
+  <a href="{{ url_for('main.landing') }}"
+    class="inline-block bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-3 rounded-xl transition">
+    Back to ArchiveHumanity
+  </a>
+</div>
+{% endblock %}

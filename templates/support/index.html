@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Support ArchiveHumanity{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-20 text-center">
+
+  <div class="text-5xl mb-6">🌿</div>
+  <h1 class="font-serif text-4xl text-stone-100 mb-4">Support this project</h1>
+  <p class="text-stone-400 text-lg mb-3 leading-relaxed">
+    ArchiveHumanity is free to use. If it's helped you honor someone you love, a small tip keeps the servers running and the memories alive.
+  </p>
+  <p class="text-stone-600 text-sm mb-12">100% goes to running and improving ArchiveHumanity.</p>
+
+  <form method="POST" action="{{ url_for('support.checkout') }}" id="tip-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="amount" id="amount-input" value="7">
+
+    <!-- Preset buttons -->
+    <div class="flex justify-center gap-3 mb-6">
+      {% for amount in presets %}
+        <button type="button"
+          onclick="selectAmount({{ amount }})"
+          data-amount="{{ amount }}"
+          class="preset-btn w-24 py-3 rounded-xl border text-sm font-semibold transition
+            {% if amount == 7 %}bg-amber-600 border-amber-600 text-white{% else %}bg-stone-900 border-stone-700 text-stone-300 hover:border-amber-600 hover:text-amber-400{% endif %}">
+          ${{ amount }}
+        </button>
+      {% endfor %}
+    </div>
+
+    <!-- Other amount -->
+    <div class="mb-8">
+      <label class="block text-xs text-stone-500 mb-2">Or enter your own amount</label>
+      <div class="relative max-w-40 mx-auto">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">$</span>
+        <input type="number" id="custom-amount" min="1" max="500" step="0.01"
+          placeholder="Other"
+          oninput="selectCustom(this.value)"
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition text-center" />
+      </div>
+    </div>
+
+    <button type="submit"
+      class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-10 py-4 rounded-xl text-lg transition shadow-lg shadow-amber-900/30 w-full max-w-xs">
+      Send tip — $<span id="amount-display">7</span>
+    </button>
+
+    <p class="text-stone-600 text-xs mt-4">Secure payment via Stripe. No account required.</p>
+  </form>
+
+</div>
+
+<script>
+  function selectAmount(amount) {
+    document.getElementById('amount-input').value = amount;
+    document.getElementById('amount-display').textContent = amount;
+    document.getElementById('custom-amount').value = '';
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      const active = parseInt(btn.dataset.amount) === amount;
+      btn.className = btn.className
+        .replace(/bg-amber-600 border-amber-600 text-white/, '')
+        .replace(/bg-stone-900 border-stone-700 text-stone-300 hover:border-amber-600 hover:text-amber-400/, '')
+        .trimEnd();
+      btn.className += active
+        ? ' bg-amber-600 border-amber-600 text-white'
+        : ' bg-stone-900 border-stone-700 text-stone-300 hover:border-amber-600 hover:text-amber-400';
+    });
+  }
+
+  function selectCustom(value) {
+    const num = parseFloat(value);
+    if (!isNaN(num) && num > 0) {
+      document.getElementById('amount-input').value = num;
+      document.getElementById('amount-display').textContent = num % 1 === 0 ? num : num.toFixed(2);
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.className = btn.className
+          .replace(/bg-amber-600 border-amber-600 text-white/, '')
+          .replace(/bg-stone-900 border-stone-700 text-stone-300 hover:border-amber-600 hover:text-amber-400/, '')
+          .trimEnd();
+        btn.className += ' bg-stone-900 border-stone-700 text-stone-300 hover:border-amber-600 hover:text-amber-400';
+      });
+    }
+  }
+</script>
+{% endblock %}

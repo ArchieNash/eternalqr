@@ -13,6 +13,7 @@ from blueprints.auth import auth_bp
 from blueprints.dashboard import dashboard_bp
 from blueprints.memorial import memorial_bp
 from blueprints.account import account_bp
+from blueprints.support import support_bp
 
 load_dotenv()
 
@@ -30,6 +31,8 @@ def create_app():
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['APP_BASE_URL'] = os.environ.get('APP_BASE_URL', '')
+    app.config['STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY', '')
+    app.config['STRIPE_PUBLISHABLE_KEY'] = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
 
     app.config['CLOUDINARY_CLOUD_NAME'] = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
     app.config['CLOUDINARY_API_KEY'] = os.environ.get('CLOUDINARY_API_KEY', '')
@@ -61,6 +64,7 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(memorial_bp)
     app.register_blueprint(account_bp)
+    app.register_blueprint(support_bp)
 
     @app.errorhandler(403)
     def forbidden(e):
