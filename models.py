@@ -21,6 +21,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_verified = db.Column(db.Boolean, default=False, server_default='true', nullable=False)
+    verification_token = db.Column(db.String(100), nullable=True, unique=True)
+    verification_token_expires = db.Column(db.DateTime, nullable=True)
 
     owned_memorials = db.relationship('Memorial', backref='owner', lazy=True, foreign_keys='Memorial.owner_id')
     collaborations = db.relationship('MemorialCollaborator', backref='user', lazy=True)
@@ -30,6 +33,11 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_verification_token(self):
+        self.verification_token = secrets.token_urlsafe(32)
+        self.verification_token_expires = datetime.utcnow() + timedelta(hours=24)
+        return self.verification_token
 
 
 class Memorial(db.Model):

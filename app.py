@@ -12,6 +12,7 @@ from blueprints.main import main_bp
 from blueprints.auth import auth_bp
 from blueprints.dashboard import dashboard_bp
 from blueprints.memorial import memorial_bp
+from blueprints.account import account_bp
 
 load_dotenv()
 
@@ -59,6 +60,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(memorial_bp)
+    app.register_blueprint(account_bp)
 
     @app.errorhandler(403)
     def forbidden(e):
@@ -70,14 +72,20 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        # Add is_living column if it doesn't exist yet (one-time migration)
         from sqlalchemy import text
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(text('ALTER TABLE family_links ADD COLUMN is_living BOOLEAN NOT NULL DEFAULT false'))
-                conn.commit()
-        except Exception:
-            pass
+        migrations = [
+            'ALTER TABLE family_links ADD COLUMN is_living BOOLEAN NOT NULL DEFAULT false',
+            'ALTER TABLE users ADD COLUMN is_verified BOOLEAN NOT NULL DEFAULT true',
+            'ALTER TABLE users ADD COLUMN verification_token VARCHAR(100)',
+            'ALTER TABLE users ADD COLUMN verification_token_expires TIMESTAMP',
+        ]
+        for sql in migrations:
+            try:
+                with db.engine.connect() as conn:
+                    conn.execute(text(sql))
+                    conn.commit()
+            except Exception:
+                pass
 
     return app
 

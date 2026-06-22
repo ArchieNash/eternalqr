@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Account — ArchiveHumanity{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12">
+
+  <h1 class="font-serif text-3xl text-stone-100 mb-8">Account Settings</h1>
+
+  <!-- Profile -->
+  <div class="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
+    <h2 class="text-stone-300 font-semibold text-sm uppercase tracking-wider mb-5">Profile</h2>
+    <form method="POST" action="{{ url_for('account.index') }}" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="update_profile">
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">Display name</label>
+        <input type="text" name="name" value="{{ current_user.name }}" required
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+      </div>
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">Email address</label>
+        <input type="text" value="{{ current_user.email }}" disabled
+          class="w-full bg-stone-800/50 border border-stone-800 text-stone-500 rounded-lg px-3 py-2.5 text-sm cursor-not-allowed" />
+      </div>
+      <div class="flex items-center justify-between pt-1">
+        <p class="text-xs text-stone-600">Member since {{ current_user.created_at.strftime('%B %Y') }}</p>
+        <button type="submit"
+          class="bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold px-5 py-2 rounded-lg transition">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Change Password -->
+  <div class="bg-stone-900 border border-stone-800 rounded-xl p-6">
+    <h2 class="text-stone-300 font-semibold text-sm uppercase tracking-wider mb-5">Change Password</h2>
+    <form method="POST" action="{{ url_for('account.index') }}" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="action" value="change_password">
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">Current password</label>
+        <input type="password" name="current_password" required
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+      </div>
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">New password</label>
+        <input type="password" name="new_password" required minlength="8"
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+      </div>
+      <div>
+        <label class="block text-sm text-stone-400 mb-1.5">Confirm new password</label>
+        <input type="password" name="confirm_password" required minlength="8"
+          class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+      </div>
+      <div class="flex justify-end pt-1">
+        <button type="submit"
+          class="bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold px-5 py-2 rounded-lg transition">
+          Update Password
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

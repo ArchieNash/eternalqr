@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Resend Verification — ArchiveHumanity{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-24">
+  <h1 class="font-serif text-3xl text-stone-100 mb-2">Resend verification</h1>
+  <p class="text-stone-400 mb-8">Enter your email and we'll send a new link.</p>
+
+  <form method="POST" action="{{ url_for('auth.resend_verification_page') }}" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div>
+      <label class="block text-sm text-stone-400 mb-1.5">Email address</label>
+      <input type="email" name="email" value="{{ email }}" required
+        class="w-full bg-stone-800 border border-stone-700 text-stone-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition" />
+    </div>
+    <button type="submit"
+      class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-lg transition">
+      Send new link
+    </button>
+  </form>
+</div>
+{% endblock %}
