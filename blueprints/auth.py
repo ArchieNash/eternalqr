@@ -11,7 +11,8 @@ def _send_verification_email(user):
     app = current_app._get_current_object()
     token = user.generate_verification_token()
     db.session.commit()
-    verify_url = url_for('auth.verify_email', token=token, _external=True)
+    base_url = app.config.get('APP_BASE_URL', request.host_url.rstrip('/'))
+    verify_url = f"{base_url}{url_for('auth.verify_email', token=token)}"
     try:
         mail = Mail(app)
         msg = Message(
