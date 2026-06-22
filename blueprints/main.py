@@ -6,3 +6,8 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def landing():
     return render_template('landing.html')
+
+
+@main_bp.route('/about')
+def about():
+    return render_template('about.html')

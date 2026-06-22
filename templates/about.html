@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}About — ArchiveHumanity{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-20">
+
+  <h1 class="font-serif text-5xl text-stone-100 mb-8">Our mission</h1>
+
+  <div class="prose space-y-6 text-stone-400 text-lg leading-relaxed">
+
+    <p>
+      Every person who has ever lived deserves to be remembered. Not just by those who knew them — but by anyone who might stumble across their story and find meaning in it. ArchiveHumanity exists to make that possible.
+    </p>
+
+    <p>
+      We built this because we believe preserving human history shouldn't be complicated, and it certainly shouldn't be expensive. The death industry already asks a great deal of grieving families — funeral costs, burial plots, headstones, flowers. We didn't want to add to that burden. A digital memorial that lasts forever should be free.
+    </p>
+
+    <p>
+      So it is. No subscriptions. No paywalls. No premium tiers. Create a memorial, generate a QR code, and place it wherever feels right — a gravestone, a framed photo, a memorial plaque. Anyone with a phone can scan it and step into that person's world.
+    </p>
+
+    <p>
+      Of course, keeping a website running isn't free — servers, storage, and the time it takes to build and maintain something like this all have real costs. We cover those ourselves, and we're happy to. But if ArchiveHumanity has meant something to you, and you'd like to help us keep the lights on, we'd be genuinely grateful.
+    </p>
+
+  </div>
+
+  <div class="mt-12 pt-8 border-t border-stone-800">
+    <a href="{{ url_for('support.index') }}"
+      class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-3 rounded-xl transition shadow-lg shadow-amber-900/20">
+      <span>♡</span> Support ArchiveHumanity
+    </a>
+    <p class="text-stone-600 text-sm mt-3">Any amount helps. No pressure, ever.</p>
+  </div>
+
+</div>
+{% endblock %}
