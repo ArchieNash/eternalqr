@@ -158,6 +158,7 @@ def edit(slug):
             relation_types_in = request.form.getlist('relation_type[]')
             link_slugs_in = request.form.getlist('linked_slug[]')
             link_names_in = request.form.getlist('linked_name[]')
+            is_living_in = request.form.getlist('is_living[]')
 
             added = 0
             for i, rt in enumerate(relation_types_in):
@@ -165,6 +166,7 @@ def edit(slug):
                     continue
                 ls = link_slugs_in[i].strip() if i < len(link_slugs_in) else ''
                 ln = link_names_in[i].strip() if i < len(link_names_in) else ''
+                living = is_living_in[i] == 'true' if i < len(is_living_in) else False
                 if not ls and not ln:
                     continue
                 linked_id = None
@@ -180,6 +182,7 @@ def edit(slug):
                     relation_type=rt,
                     linked_memorial_id=linked_id,
                     linked_name=ln if not linked_id else None,
+                    is_living=living,
                 ))
                 added += 1
 

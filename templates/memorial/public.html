@@ -108,11 +108,12 @@
   {% endif %}
 
   <!-- Family -->
-  {% if memorial.family_links %}
+  {% set public_links = memorial.family_links | selectattr('is_living', 'equalto', False) | list %}
+  {% if public_links %}
     <section>
       <h2 class="font-serif text-2xl text-stone-200 mb-5">Family</h2>
       <div class="flex flex-wrap gap-3">
-        {% for link in memorial.family_links %}
+        {% for link in public_links %}
           <div class="bg-stone-900 border border-stone-800 rounded-xl px-5 py-3">
             {% if link.linked_memorial %}
               <a href="{{ url_for('memorial.public', slug=link.linked_memorial.slug) }}"

@@ -70,6 +70,14 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        # Add is_living column if it doesn't exist yet (one-time migration)
+        from sqlalchemy import text
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text('ALTER TABLE family_links ADD COLUMN is_living BOOLEAN NOT NULL DEFAULT false'))
+                conn.commit()
+        except Exception:
+            pass
 
     return app
 

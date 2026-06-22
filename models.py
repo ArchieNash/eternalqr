@@ -168,6 +168,7 @@ class FamilyLink(db.Model):
     linked_memorial_id = db.Column(db.Integer, db.ForeignKey('memorials.id'), nullable=True)
     # Fallback: just a name if not on the platform
     linked_name = db.Column(db.String(200))
+    is_living = db.Column(db.Boolean, default=False, server_default='false', nullable=False)
 
     linked_memorial = db.relationship('Memorial', foreign_keys=[linked_memorial_id])
 
