@@ -293,6 +293,7 @@ def _handle_invite(memorial, request, app):
         mail = Mail(app)
         msg = Message(
             subject=f'You\'ve been invited to co-manage a memorial for {memorial.full_name}',
+            sender=('ArchiveHumanity', app.config.get('MAIL_USERNAME', '')),
             recipients=[email],
         )
         msg.body = (

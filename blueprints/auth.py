@@ -17,6 +17,7 @@ def _send_verification_email(user):
         mail = Mail(app)
         msg = Message(
             subject='Verify your ArchiveHumanity account',
+            sender=('ArchiveHumanity', app.config.get('MAIL_USERNAME', '')),
             recipients=[user.email],
         )
         msg.body = (
