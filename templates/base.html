@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}EternalQR{% endblock %}</title>
+  <title>{% block title %}ArchiveHumanity{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -48,8 +48,8 @@
   <nav class="border-b border-stone-800 bg-stone-900/80 backdrop-blur sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
       <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 hover:opacity-80 transition">
-        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EternalQR logo" class="h-12 w-auto" style="mix-blend-mode: multiply;" />
-        <span class="font-serif text-xl font-bold text-amber-400 tracking-wide">EternalQR</span>
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="ArchiveHumanity logo" class="h-12 w-auto" style="mix-blend-mode: multiply;" />
+        <span class="font-serif text-xl font-bold text-amber-400 tracking-wide">ArchiveHumanity</span>
       </a>
       <div class="flex items-center gap-5">
         {% if current_user.is_authenticated %}
@@ -86,7 +86,7 @@
   </main>
 
   <footer class="border-t border-stone-800 mt-16 py-8 text-center text-stone-600 text-sm">
-    <p>&copy; 2026 EternalQR &mdash; Honoring lives, preserving memories.</p>
+    <p>&copy; 2026 ArchiveHumanity &mdash; Honoring lives, preserving memories.</p>
   </footer>
 
 </body>

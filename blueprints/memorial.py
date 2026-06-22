@@ -295,9 +295,9 @@ def _handle_invite(memorial, request, app):
         msg.body = (
             f'Hi,\n\n'
             f'{current_user.name} has invited you to help manage the memorial for '
-            f'{memorial.full_name} on EternalQR.\n\n'
+            f'{memorial.full_name} on ArchiveHumanity.\n\n'
             f'Click the link below to accept:\n{invite_url}\n\n'
-            f'This link expires in 7 days.\n\nThe EternalQR Team'
+            f'This link expires in 7 days.\n\nThe ArchiveHumanity Team'
         )
         mail.send(msg)
         flash(f'Invite sent to {email}.', 'success')

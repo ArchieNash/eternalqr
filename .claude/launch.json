@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "eternalqr",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["app.py"],
+      "port": 5000,
+      "autoPort": true,
+      "env": {
+        "FLASK_SECRET_KEY": "preview-secret-key",
+        "DATABASE_URL": "sqlite:///preview.db",
+        "APP_BASE_URL": "http://localhost:5000"
+      }
+    }
+  ]
+}
