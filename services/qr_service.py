@@ -1,27 +1,14 @@
 import io
-import os
 import qrcode
 from PIL import Image, ImageDraw
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
 from qrcode.image.styles.colormasks import SolidFillColorMask
 
-_LOGO_PATH = os.path.join(os.path.dirname(__file__), '..', 'static', 'img', 'logo.png')
-
 _FG = (46, 90, 58)    # #2e5a3a — forest green
 _BG = (255, 255, 255)
 
 _COLOR_MASK = SolidFillColorMask(back_color=_BG, front_color=_FG)
-
-
-def _load_logo():
-    if not os.path.exists(_LOGO_PATH):
-        return None
-    logo = Image.open(_LOGO_PATH).convert('RGBA')
-    bbox = logo.getbbox()
-    if bbox:
-        logo = logo.crop(bbox)
-    return logo
 
 
 def _draw_rounded_finders(img, module_count, box_size, border):
@@ -72,17 +59,11 @@ def generate_qr_png(url: str) -> bytes:
     qr.make(fit=True)
     module_count = qr.modules_count
 
-    kwargs = dict(
+    styled = qr.make_image(
         image_factory=StyledPilImage,
         module_drawer=RoundedModuleDrawer(),
         color_mask=_COLOR_MASK,
     )
-    logo = _load_logo()
-    if logo:
-        kwargs['embedded_image'] = logo
-        kwargs['embedded_image_ratio'] = 0.25
-
-    styled = qr.make_image(**kwargs)
 
     # Save styled image to PIL for post-processing
     tmp = io.BytesIO()
