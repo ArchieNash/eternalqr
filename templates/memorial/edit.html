@@ -269,12 +269,12 @@
         <input type="hidden" name="action" value="add_family_link">
         <div class="flex items-center justify-between mb-1">
           <p class="text-sm text-stone-400 font-medium">Add family members</p>
-          <p class="text-xs text-stone-600">Slug = the URL path of their memorial, e.g. <span class="font-mono">john-smith</span></p>
+          <p class="text-xs text-stone-600">Link to their memorial, e.g. <span class="font-mono">archivehumanity.com/m/john-smith</span></p>
         </div>
 
         <div id="family-rows" class="space-y-2">
           <!-- row template -->
-          <div class="family-row grid sm:grid-cols-[160px_1fr_1fr_auto] gap-2 items-end">
+          <div class="family-row grid sm:grid-cols-[160px_1fr_1fr_auto] gap-2">
             <div>
               <label class="block text-xs text-stone-500 mb-1">Relationship</label>
               <select name="relation_type[]"
@@ -285,7 +285,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs text-stone-500 mb-1">ArchiveHumanity slug (optional)</label>
+              <label class="block text-xs text-stone-500 mb-1">Slug (optional)</label>
               <input type="text" name="linked_slug[]" placeholder="john-smith"
                 class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition" />
             </div>
@@ -294,15 +294,18 @@
               <input type="text" name="linked_name[]" placeholder="Mary Smith"
                 class="w-full bg-stone-800 border border-stone-700 text-stone-100 placeholder-stone-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 transition" />
             </div>
-            <div class="flex flex-col items-center gap-2 pb-0.5">
-              <label class="flex items-center gap-1.5 text-xs text-stone-500 cursor-pointer whitespace-nowrap" title="Hidden from public visitors">
-                <input type="checkbox" class="living-checkbox accent-amber-500"
-                  onchange="this.closest('label').querySelector('input[type=hidden]').value = this.checked ? 'true' : 'false'" />
-                <span>Living</span>
-                <input type="hidden" name="is_living[]" value="false" />
-              </label>
-              <button type="button" onclick="removeRow(this)"
-                class="remove-row-btn invisible text-stone-600 hover:text-red-400 text-xl leading-none transition">&times;</button>
+            <div class="flex flex-col justify-between">
+              <span class="block text-xs mb-1 invisible">_</span>
+              <div class="flex items-center gap-3 py-2">
+                <label class="flex items-center gap-1.5 text-xs text-stone-500 cursor-pointer whitespace-nowrap" title="Hidden from public visitors">
+                  <input type="checkbox" class="living-checkbox accent-amber-500"
+                    onchange="this.closest('label').querySelector('input[type=hidden]').value = this.checked ? 'true' : 'false'" />
+                  <span>Living</span>
+                  <input type="hidden" name="is_living[]" value="false" />
+                </label>
+                <button type="button" onclick="removeRow(this)"
+                  class="remove-row-btn invisible text-stone-600 hover:text-red-400 text-xl leading-none transition">&times;</button>
+              </div>
             </div>
           </div>
         </div>

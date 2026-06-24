@@ -47,13 +47,15 @@
 
   <nav class="border-b border-stone-800 bg-stone-900/80 backdrop-blur sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
-      <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 hover:opacity-80 transition">
+      <a href="{{ url_for('main.landing') }}" class="flex items-center gap-2 hover:opacity-80 transition shrink-0">
         <img src="{{ url_for('static', filename='img/logo.png') }}" alt="ArchiveHumanity logo" class="h-12 w-auto" style="mix-blend-mode: multiply;" />
         <span class="font-serif text-xl font-bold text-amber-400 tracking-wide">ArchiveHumanity</span>
       </a>
-      <div class="flex items-center gap-5">
+
+      <!-- Desktop nav -->
+      <div class="hidden sm:flex items-center gap-5">
         {% if current_user.is_authenticated %}
-          <span class="text-stone-500 text-sm hidden sm:inline">{{ current_user.name }}</span>
+          <span class="text-stone-500 text-sm">{{ current_user.name }}</span>
           <a href="{{ url_for('dashboard.index') }}" class="text-sm text-stone-300 hover:text-amber-400 transition">Dashboard</a>
           <a href="{{ url_for('account.index') }}" class="text-sm text-stone-300 hover:text-amber-400 transition">Account</a>
           <a href="{{ url_for('auth.logout') }}" class="text-sm text-stone-500 hover:text-stone-300 transition">Logout</a>
@@ -62,8 +64,45 @@
           <a href="{{ url_for('auth.register') }}" class="text-sm bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition font-medium">Get Started</a>
         {% endif %}
       </div>
+
+      <!-- Hamburger button (mobile only) -->
+      <button id="nav-toggle" class="sm:hidden p-2 text-stone-400 hover:text-stone-200 transition" aria-label="Open menu">
+        <svg id="nav-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="nav-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="nav-mobile" class="hidden sm:hidden border-t border-stone-800 bg-stone-900 px-4 py-3 space-y-1">
+      {% if current_user.is_authenticated %}
+        <p class="text-stone-500 text-xs pb-1">{{ current_user.name }}</p>
+        <a href="{{ url_for('dashboard.index') }}" class="block py-2 text-sm text-stone-300 hover:text-amber-400 transition">Dashboard</a>
+        <a href="{{ url_for('account.index') }}" class="block py-2 text-sm text-stone-300 hover:text-amber-400 transition">Account</a>
+        <a href="{{ url_for('auth.logout') }}" class="block py-2 text-sm text-stone-500 hover:text-stone-300 transition">Logout</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="block py-2 text-sm text-stone-300 hover:text-amber-400 transition">Login</a>
+        <a href="{{ url_for('auth.register') }}" class="block py-2 text-sm text-amber-400 hover:text-amber-300 font-medium transition">Get Started</a>
+      {% endif %}
     </div>
   </nav>
+
+  <script>
+    (function() {
+      var btn = document.getElementById('nav-toggle');
+      var menu = document.getElementById('nav-mobile');
+      var iconOpen = document.getElementById('nav-icon-open');
+      var iconClose = document.getElementById('nav-icon-close');
+      btn.addEventListener('click', function() {
+        var open = menu.classList.toggle('hidden');
+        iconOpen.classList.toggle('hidden', !open);
+        iconClose.classList.toggle('hidden', open);
+      });
+    })();
+  </script>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -88,6 +127,8 @@
 
   <footer class="border-t border-stone-800 mt-16 py-8 text-center text-stone-600 text-sm">
     <a href="{{ url_for('main.about') }}" class="text-stone-500 hover:text-amber-400 transition">About</a>
+    <span class="text-stone-700 mx-2">|</span>
+    <a href="{{ url_for('main.contact') }}" class="text-stone-500 hover:text-amber-400 transition">Contact</a>
     <p class="mt-2">&copy; 2026 ArchiveHumanity &mdash; Honoring lives, preserving memories. By <a href="https://methodwarellc.com" class="hover:text-amber-400 transition">MethodWare LLC</a>.</p>
   </footer>
 
@@ -96,6 +137,7 @@
     title="Support ArchiveHumanity"
     class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg shadow-amber-900/30 transition group">
     <span class="text-base leading-none">♡</span>
+    <span class="sm:hidden text-xs">Donate</span>
     <span class="hidden sm:inline">Support us</span>
   </a>
 
