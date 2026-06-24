@@ -1,46 +1,54 @@
 import io
+import os
 import qrcode
 from PIL import Image, ImageDraw
 from qrcode.image.styledpil import StyledPilImage
-from qrcode.image.styles.moduledrawers.pil import RoundedModuleDrawer
+from qrcode.image.styles.moduledrawers.pil import CircleModuleDrawer
 from qrcode.image.styles.colormasks import SolidFillColorMask
 
-_FG = (46, 90, 58)    # #2e5a3a — forest green
-_BG = (255, 255, 255)
+_LOGO_PATH = os.path.join(os.path.dirname(__file__), '..', 'static', 'img', 'logo.png')
+
+_FG = (58, 110, 72)    # #3a6e48 — medium forest green
+_BG = (247, 243, 236)  # #f7f3ec — warm parchment
 
 _COLOR_MASK = SolidFillColorMask(back_color=_BG, front_color=_FG)
 
 
-def _draw_rounded_finders(img, module_count, box_size, border):
-    """Redraw the three finder patterns with rounded corners."""
-    draw = ImageDraw.Draw(img)
-    fp = 7 * box_size       # finder size in pixels
-    bp = border * box_size  # border offset in pixels
-    r = int(box_size * 1.5) # corner radius
+def _load_logo():
+    if not os.path.exists(_LOGO_PATH):
+        return None
+    logo = Image.open(_LOGO_PATH).convert('RGBA')
+    bbox = logo.getbbox()
+    if bbox:
+        logo = logo.crop(bbox)
+    return logo
 
-    corners = [
+
+def _draw_bullseye_finders(img, module_count, box_size, border):
+    """Replace square finder patterns with concentric-circle (bullseye) style."""
+    draw = ImageDraw.Draw(img)
+    fp = 7 * box_size       # finder pixel width
+    bp = border * box_size  # border offset
+
+    positions = [
         (bp, bp),
         (bp + (module_count - 7) * box_size, bp),
         (bp, bp + (module_count - 7) * box_size),
     ]
 
-    for fx, fy in corners:
+    for fx, fy in positions:
+        cx, cy = fx + fp // 2, fy + fp // 2
         # Erase the square finder the library drew
-        draw.rectangle([fx, fy, fx + fp - 1, fy + fp - 1], fill=_BG)
+        draw.rectangle([fx - 1, fy - 1, fx + fp, fy + fp], fill=_BG)
         # Outer ring (dark)
-        draw.rounded_rectangle([fx, fy, fx + fp - 1, fy + fp - 1], radius=r, fill=_FG)
-        # Middle ring (light)
-        s = box_size
-        draw.rounded_rectangle(
-            [fx + s, fy + s, fx + fp - s - 1, fy + fp - s - 1],
-            radius=max(1, r - s // 2), fill=_BG,
-        )
-        # Centre dot (dark)
-        s2 = 2 * box_size
-        draw.rounded_rectangle(
-            [fx + s2, fy + s2, fx + fp - s2 - 1, fy + fp - s2 - 1],
-            radius=max(1, r - s), fill=_FG,
-        )
+        r = fp // 2
+        draw.ellipse([cx - r, cy - r, cx + r - 1, cy + r - 1], fill=_FG)
+        # Middle gap (light) — 5/7 radius
+        r2 = fp * 5 // 14
+        draw.ellipse([cx - r2, cy - r2, cx + r2, cy + r2], fill=_BG)
+        # Centre dot (dark) — 3/7 radius
+        r3 = fp * 3 // 14
+        draw.ellipse([cx - r3, cy - r3, cx + r3, cy + r3], fill=_FG)
 
     return img
 
@@ -59,19 +67,24 @@ def generate_qr_png(url: str) -> bytes:
     qr.make(fit=True)
     module_count = qr.modules_count
 
-    styled = qr.make_image(
+    kwargs = dict(
         image_factory=StyledPilImage,
-        module_drawer=RoundedModuleDrawer(),
+        module_drawer=CircleModuleDrawer(),
         color_mask=_COLOR_MASK,
     )
+    logo = _load_logo()
+    if logo:
+        kwargs['embedded_image'] = logo
+        kwargs['embedded_image_ratio'] = 0.22
 
-    # Save styled image to PIL for post-processing
+    styled = qr.make_image(**kwargs)
+
     tmp = io.BytesIO()
     styled.save(tmp, format='PNG')
     tmp.seek(0)
     img = Image.open(tmp).copy()
 
-    img = _draw_rounded_finders(img, module_count, box_size, border)
+    img = _draw_bullseye_finders(img, module_count, box_size, border)
 
     buf = io.BytesIO()
     img.save(buf, format='PNG')
