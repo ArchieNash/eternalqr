@@ -378,3 +378,27 @@ def qr_download(slug):
         as_attachment=True,
         download_name=f'qr-{slug}.png',
     )
+
+
+@memorial_bp.route('/edit/<slug>/delete', methods=['POST'])
+@login_required
+def delete(slug):
+    memorial = Memorial.query.filter_by(slug=slug).first_or_404()
+    if memorial.owner_id != current_user.id:
+        abort(403)
+    # Remove Cloudinary photos
+    for photo in memorial.photos:
+        if photo.public_id:
+            try:
+                delete_photo(photo.public_id)
+            except Exception:
+                pass
+    if memorial.profile_photo_public_id:
+        try:
+            delete_photo(memorial.profile_photo_public_id)
+        except Exception:
+            pass
+    db.session.delete(memorial)
+    db.session.commit()
+    flash('Memorial deleted.', 'success')
+    return redirect(url_for('dashboard.index'))
