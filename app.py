@@ -1,6 +1,6 @@
 import os
-from flask import Flask, render_template
-from flask_login import LoginManager
+from flask import Flask, render_template, request
+from flask_login import LoginManager, login_user, current_user
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -65,6 +65,17 @@ def create_app():
     app.register_blueprint(memorial_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(support_bp)
+
+    # Demo mode: auto-login as a fixed user so reviewers can access the full site.
+    # Enable by setting DEMO_USER_EMAIL in environment. Remove when done.
+    demo_email = os.environ.get('DEMO_USER_EMAIL', '')
+    if demo_email:
+        @app.before_request
+        def auto_login():
+            if not current_user.is_authenticated and request.endpoint not in ('static',):
+                user = User.query.filter_by(email=demo_email).first()
+                if user:
+                    login_user(user, remember=True)
 
     @app.errorhandler(403)
     def forbidden(e):
